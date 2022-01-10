@@ -123,9 +123,10 @@ stafOffc_change = stafOffc_new-stafOffc_lastWk
 
 col1, col2, col3, col4 = st.columns(4)
 col1.metric('weekly student new case',f'{int(studCase_new)}', f'{int(studCase_change)}', 'inverse')
-col2.metric('weekly student off-campus', f'{int(studOffc_new)}', f'{int(studOffc_change)}', 'inverse')
+# col2.metric('weekly student off-campus', f'{int(studOffc_new)}', f'{int(studOffc_change)}', 'inverse')
+col2.metric('weekly student off-campus', 'N/A', 'n/a')
 col3.metric('weekly staff new case', f'{int(stafCase_new)}', f'{int(stafCase_change)}', 'inverse')
-col4.metric('weekly staff off-campus', f'{int(stafOffc_new)}', f'{int(stafOffc_change)}', 'inverse')
+col4.metric('weekly staff off-campus', 'N/A', 'n/a')
 
     ## -- MAP MSD SECTION -- ##
 left, right = st.columns(2)
