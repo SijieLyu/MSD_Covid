@@ -122,10 +122,10 @@ stafOffc_lastWk = df_weekSum.iloc[-2,:].staff_offCampus
 stafOffc_change = stafOffc_new-stafOffc_lastWk
 
 col1, col2, col3, col4 = st.columns(4)
-col1.metric('weekly student new case',f'{studCase_new}', f'{studCase_change}', 'inverse')
-col2.metric('weekly student off-campus', f'{studOffc_new}', f'{studOffc_change}', 'inverse')
-col3.metric('weekly staff new case', f'{stafCase_new}', f'{stafCase_change}', 'inverse')
-col4.metric('weekly staff off-campus', f'{stafOffc_new}', f'{stafOffc_change}', 'inverse')
+col1.metric('weekly student new case',f'{int(studCase_new)}', f'{int(studCase_change)}', 'inverse')
+col2.metric('weekly student off-campus', f'{int(studOffc_new)}', f'{int(studOffc_change)}', 'inverse')
+col3.metric('weekly staff new case', f'{int(stafCase_new)}', f'{int(stafCase_change)}', 'inverse')
+col4.metric('weekly staff off-campus', f'{int(stafOffc_new)}', f'{int(stafOffc_change)}', 'inverse')
 
     ## -- MAP MSD SECTION -- ##
 left, right = st.columns(2)
@@ -156,7 +156,7 @@ with right:
         y = df_weekSum.staff_newPos)])
     plot_week.update_layout(LINECHART_LAYOUT)
     plot_week.update_xaxes(showgrid=True, ticks='outside', tickson='boundaries', ticklen=5)
-    plot_week.update_yaxes(tick0=0, dtick=10, title_text='Count')
+    plot_week.update_yaxes(tick0=0, dtick=50, title_text='Count')
     st.plotly_chart(plot_week)
 
     ## -- SELECTED SCHOOL STUDENT CASE TRACKING -- ##
@@ -176,7 +176,7 @@ plot_stud.update_layout(BARCHART_LAYOUT,
                            text=f'{df_schl.school.unique()[0]} Student Case Tracking - Last Updated {str(df_curr.date.unique()[0])[:10]}',
                            x=0.01, y=0.9))
 plot_stud.update_xaxes(showgrid=True, ticks='outside', tickson='boundaries', ticklen=5)
-plot_stud.update_yaxes(tick0=0, dtick=5, title_text='Count')
+plot_stud.update_yaxes(tick0=0, dtick=10, title_text='Count')
 st.plotly_chart(plot_stud)
 
     ## -- SELECTED SCHOOL STUDENT CASE TRACKING --
