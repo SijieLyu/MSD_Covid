@@ -30,6 +30,15 @@ enroll[['lat','long']] = enroll['lat_long'].str.split(',',expand=True)
 enroll[['lat','long']] = enroll[['lat','long']].astype('float')
 enroll['lat'] = np.round(enroll.lat, 4)
 enroll['long'] = np.round(enroll.long, 4)
+school_list = ['John Cary Early Childhood Center','Beasley Elementary School',
+                  'Bierbaum Elementary School','Blades Elementary School',
+                  'Forder Elementary School','Hagemann Elementary School',
+                  'MOSAIC Elementary School','Oakville Elementary School',
+                  'Point Elementary School','Rogers Elementary School',
+                  'Trautwein Elementary School','Wohlwend Elementary School',
+                  'Bernard Middle School','Buerkle Middle School','Oakville Middle School',
+                  'Washington Middle School','Mehlville High School',
+                  'Oakville High School','SCOPE (Alternative School)']
 
 # ---------------------
 # filter down to one specific school
@@ -37,7 +46,9 @@ enroll['long'] = np.round(enroll.long, 4)
 
 # ---------------------
 # filter down to current week
-df_curr = df.copy().loc[df['date']==df['date'].max(), :]
+df_curr = (df.copy()
+           .loc[df['date']==df['date'].max(), :]
+           .loc[df['school'].isin(school_list), :])
 df_curr = df_curr.merge(enroll[['school', 'lat', 'long', 'num_enroll']], on='school', how='left')
 df_curr['total_new_case'] = df_curr.staff_newPos + df_curr.stu_newPos
 
@@ -87,7 +98,8 @@ with st.sidebar:
     st.write('## Select a School')
     school = st.radio(
         'to see the weekly update of Covid-19 cases:',
-        options= np.sort(df.school.unique())
+        options= school_list
+        #np.sort(df.school.unique())
     )
 
     ## -- SET UP FILTER LOGIC -- ##
@@ -99,6 +111,7 @@ df_schl = df.query('school==@school')
 ##################################
     ## -- SET UP PAGE TITLE -- ##
 st.header('Mehlville School District COVID-19 Dashboard')
+st.subheader(f'Last Updated: {str(df.date.max())[:-8]}')
 
     ## -- TOP KPI SECTION -- ##
 #col1.metric('weekly student new case','9', '9')
@@ -165,19 +178,19 @@ plot_stud = go.Figure(data=[go.Bar(
     name = 'Student New Case',
     x = df_schl.date,
     y = df_schl.stu_newPos.values
-   ),
-                       go.Bar(
-    name = 'Student off Campus',
-    x = df_schl.date,
-    y = df_schl.stu_offCampus
-   )
+   )#,
+    #                    go.Bar(
+    # name = 'Student off Campus',
+    # x = df_schl.date,
+    # y = df_schl.stu_offCampus
+   # )
 ])
 plot_stud.update_layout(BARCHART_LAYOUT,
                         title=dict(
                            text=f'{df_schl.school.unique()[0]} Student Case Tracking - Last Updated {str(df_curr.date.unique()[0])[:10]}',
                            x=0.01, y=0.9))
 plot_stud.update_xaxes(showgrid=True, ticks='outside', tickson='boundaries', ticklen=5)
-plot_stud.update_yaxes(tick0=0, dtick=10, title_text='Count')
+plot_stud.update_yaxes(tick0=0, dtick=2, title_text='Count')
 st.plotly_chart(plot_stud)
 
     ## -- SELECTED SCHOOL STUDENT CASE TRACKING --
@@ -185,18 +198,20 @@ plot_staf = go.Figure(data=[go.Bar(
     name = 'Staff New Case',
     x = df_schl.date,
     y = df_schl.staff_newPos.values
-   ),
-                       go.Bar(
-    name = 'Staff off Campus',
-    x = df_schl.date,
-    y = df_schl.staff_offCampus)])
+    )#,
+#                        go.Bar(
+#     name = 'Staff off Campus',
+#     x = df_schl.date,
+#     y = df_schl.staff_offCampus)
+]
+                      )
 
 plot_staf.update_layout(BARCHART_LAYOUT,
                         title=dict(
                            text=f'{df_schl.school.unique()[0]} Staff Case Tracking - Last Updated {str(df_curr.date.unique()[0])[:10]}',
                            x=0.01, y=0.9))
 plot_staf.update_xaxes(showgrid=True, ticks='outside', tickson='boundaries', ticklen=5)
-plot_staf.update_yaxes(tick0=0, dtick=1, title_text='Count')
+plot_staf.update_yaxes(tick0=0, dtick=2, title_text='Count')
 st.plotly_chart(plot_staf)
 
 st.markdown('----')
